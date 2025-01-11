@@ -1,0 +1,40 @@
+﻿@page "/create"
+@using Application.ServiceInterfaces
+@using Domain.Dto
+@inject NavigationManager Navigation
+@inject IUserService _userService
+
+<h3>Create User</h3>
+
+<EditForm Model="@userInsertDto" >
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>FirstName:</label>
+        <InputText @bind-Value="@userInsertDto.FirstName" class="form-control" />
+    </div>
+    <div>
+        <label>LastName:</label>
+        <InputText @bind-Value="@userInsertDto.LastName" class="form-control" />
+    </div>
+    <div>
+        <label>Address:</label>
+        <InputTextArea @bind-Value="@userInsertDto.Address" class="form-control" />
+    </div>
+    <div>
+        <label>City:</label>
+        <InputText @bind-Value="@userInsertDto.City" class="form-control" />
+    </div>
+    <button type="button" class="btn btn-danger" @onclick="() => Insert(userInsertDto)">Save</button>
+</EditForm>
+
+@code {
+    private UserInsertDto userInsertDto = new(); //esia ogtagorcvum verevy html-i mej
+
+    private async Task Insert(UserInsertDto userInsertDtoParam)
+    {
+        await _userService.Insert(userInsertDtoParam);
+        Navigation.NavigateTo("/user");
+    }
+}

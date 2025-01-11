@@ -1,0 +1,59 @@
+﻿@using Application.ServiceInterfaces
+@using Domain.Dto
+@page "/user"
+@inherits UserComponent
+@rendermode InteractiveServer //???
+
+<PageTitle>user</PageTitle>
+
+<h3>UserPage</h3>
+
+@inject IUserService _userService
+
+<a class="btn btn-primary mb-2" href="/create">Create New Product</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>FirstName</th>
+            <th>LastName</th>
+            <th>City</th>
+            <th>Address</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in userDto)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.FirstName</td>
+                <td>@user.LastName</td>
+                <td>@user.City</td>
+                <td>@user.Address</td>
+                <td>
+                    <a class="btn btn-warning" href="/edit/@user.Id">Edit</a>
+                    <button class="btn btn-danger" @onclick="() => DeleteUser(user.Id)">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<UserDto> userDto = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        userDto = await _userService.GetAll();
+    }
+
+    private async Task DeleteUser(int id)
+    {
+        if (id != null )
+        {
+            await _userService.Delete(id);
+            userDto = await _userService.GetAll();
+        }
+    }
+}

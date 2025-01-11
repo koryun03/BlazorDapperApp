@@ -1,0 +1,50 @@
+﻿@page "/edit/{id:int}"
+
+@using Application.ServiceInterfaces
+@using Domain.Dto
+@inject NavigationManager Navigation
+@inject IUserService _userService
+
+
+<h3>Update User</h3>
+
+<EditForm Model="@userDto">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>FirstName:</label>
+        <InputText @bind-Value="@userDto.FirstName" class="form-control" />
+    </div>
+    <div>
+        <label>LastName:</label>
+        <InputText @bind-Value="@userDto.LastName" class="form-control" />
+    </div>
+    <div>
+        <label>Address:</label>
+        <InputTextArea @bind-Value="@userDto.Address" class="form-control" />
+    </div>
+    <div>
+        <label>City:</label>
+        <InputText @bind-Value="@userDto.City" class="form-control" />
+    </div>
+    <button type="button" class="btn btn-danger" @onclick="() => Update(userDto)">Save</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private UserDto userDto = new(); //esia ogtagorcvum verevy html-i mej
+   
+    protected override async Task OnInitializedAsync()
+    {
+        userDto = await _userService.GetById(Id);
+    }
+  
+    private async Task Update(UserDto dto)
+    {
+        await _userService.Update(dto);
+        Navigation.NavigateTo("/user");
+    }
+}
